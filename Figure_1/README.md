@@ -7,7 +7,7 @@ File 'dates_and_locations_tsv_2022_09_26.tar.xz': downloaded from https://www.ep
 
 ## Conceptual folding of viral RNA (Figure 1B): ##
 
-See ???
+See commands for [Figure 2](https://github.com/HKeyHKey/Houbron_et_al_2023/tree/main/Figure_2), section "Initial screen for accessible regions in conserved genomic segments of the SARS-CoV-2 variant collection dated Mar. 17, 2020".
 
 ## Conservation along SARS-CoV-2 genome (Figure 1C): ##
 
