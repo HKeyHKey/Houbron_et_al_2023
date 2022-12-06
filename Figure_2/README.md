@@ -2,7 +2,7 @@
 
 Variant fasta file 'gisaid_cov2020_sequences.fasta' downloaded on March 17, 2020 from [GISAID](https://gisaid.org/), selecting "human" as a host.
 
-``./Script_candidate_target_sites.sh gisaid_cov2020_sequences.fasta;Script_off-target_prediction.sh``
+``./Script_candidate_target_sites.sh gisaid_cov2020_sequences.fasta;./Script_off-target_prediction.sh``
 
 Intermediary files: 'Variant_homogeneity_Sampled_variants.dat' measures sequence conservation across the picked variants; 'EPI_ISL_402119_predicted_folding.tar.bz2' contains nucleotide pairing probability along the EPI_ISL_402119 variant genome and using various metrics (full-length genomic RNA folding; fill-length ORF folding; sliding window folding with various window sizes).
 
