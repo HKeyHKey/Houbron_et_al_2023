@@ -1,0 +1,39 @@
+map=read.csv('Map.csv',header=F)
+
+seeding=rbind(rep(0,12),cbind(rep(0,5),array(rep(c(1:25),2),dim=c(5,10)),rep(0,5)),rep(0,12)) # Order of seeding (cell suspension distributed sequentially into 25 wells: this array contains the rank of these wells
+
+concentrations=c(20,100)
+library(DescTools)
+library(car)
+
+response=c();concentr=c();duplex=c();seeding_rank=c()
+for (conc in concentrations)
+{
+data=read.csv(paste('VERO_E6_',conc,'nM_siARN.csv',sep=''),header=F)
+for (column in c(1:ncol(map))[!is.na(apply(map,2,unique))])
+{
+label=unique(map[,column][map[,column]!=''])
+for (row in c(1:nrow(map))[map[,column]==label])
+{
+response=append(response,data[row,column])
+concentr=append(concentr,conc)
+duplex=append(duplex,as.character(label))
+seeding_rank=append(seeding_rank,seeding[row,column])
+}
+}
+pdf(paste('Viability_assay_',conc,'_nM.pdf',sep=''),width=10,height=6)
+boxplot(response[concentr==conc]~duplex[concentr==conc],xlab='Transfected siRNA',ylab='Cell count after 72h',ylim=c(0,5e5))
+dev.off()
+print(paste("Concentration =",conc,"nM"))
+print("Shapiro-Wilk test p-values:")
+for (d in unique(duplex[concentr==conc]))
+print(shapiro.test(response[concentr==conc & duplex==d])$p.value)
+print("Levene test p-value:")
+print(leveneTest(response[concentr==conc],as.factor(duplex[concentr==conc]))$Pr[1])
+print(DunnettTest(response[concentr==conc],as.factor(duplex[concentr==conc]),control='r43/r45'))
+}
+print("")
+print("Control of the effect of seeding order in the plate:")
+print(summary(aov(response~concentr+duplex+seeding_rank)))
+
+

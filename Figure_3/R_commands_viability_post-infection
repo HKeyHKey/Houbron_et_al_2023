@@ -1,0 +1,61 @@
+library(plotrix)
+
+all=c()
+siRNA=c()
+concentr=c()
+mortality_reduction=c()
+mortality_reduction_conc=c()
+mortality_reduction_siRNA=c()
+
+for (conc in c(1,5,20,100))
+{
+data=read.csv(paste('Plaque_',conc,'_nM.csv',sep=''),header=F)
+
+untreated_infected=data$V1[5:8]
+untreated_uninfected=data$V1[1:4]
+remdesivir=data$V12[1:4]
+
+y_range=max(pretty(range(0,max(c(max(data[,2:11],na.rm=T),mean(untreated_uninfected)+std.error(untreated_uninfected),mean(remdesivir)+std.error(remdesivir))))))
+
+pdf(paste('Boxplot_',conc,'_nM.pdf',sep=''),width=10,height=7)
+plot(c(1:10),c(1:10),ylim=c(0,y_range),ty='n',axes=F,xlab='',ylab='Cell viability (A.U.)',main=paste('Transfection at',conc,'nM'))
+rect(0,mean(untreated_infected)-std.error(untreated_infected),11,mean(untreated_infected)+std.error(untreated_infected),col='lightblue',border='lightblue')
+lines(c(0,11),rep(mean(untreated_infected),2),lty=2,col='blue')
+rect(0,mean(untreated_uninfected)-std.error(untreated_uninfected),11,mean(untreated_uninfected)+std.error(untreated_uninfected),col='pink',border='pink')
+lines(c(0,11),rep(mean(untreated_uninfected),2),lty=2,col='red')
+rect(0,mean(remdesivir)-std.error(remdesivir),11,mean(remdesivir)+std.error(remdesivir),col='chartreuse3',border='chartreuse3')
+lines(c(0,11),rep(mean(remdesivir),2),lty=2,col='green')
+par(new=T)
+boxplot(data$V2[2:7],data$V3[2:7],data$V4[2:7],data$V5[2:7],data$V6[2:7],data$V7[2:7],data$V8[2:7],data$V9[2:7],data$V10[2:7],data$V11[2:7],ylim=c(0,y_range),axes=F,xlab='',ylab='')
+axis(2)
+axis(1,labels=c(paste('siRNA',1:8),'siRNA Ø','mock'),at=c(1:10))
+legend('bottomright',c('Untreated, uninfected','Untreated, infected','Remdesivir-treated, infected'),col=c('red','blue','green'),pch='_')
+dev.off()
+for (col in 2:11)
+{
+all=append(all,data[,col][2:7])
+if (col<10)
+{
+siRNA=append(siRNA,rep(paste('siRNA_',col-1,sep=''),6))
+} else
+{
+if (col==10)
+{
+siRNA=append(siRNA,rep('siRNA_Ø',6))
+} else siRNA=append(siRNA,rep('mock',6))
+}
+concentr=append(concentr,rep(conc,6))
+mortality_reduction=append(mortality_reduction,100*(mean((data[,col][2:7]-mean(untreated_infected))/(mean(untreated_uninfected)-mean(untreated_infected)))))
+mortality_reduction_conc=append(mortality_reduction_conc,conc)
+mortality_reduction_siRNA=append(mortality_reduction_siRNA,paste('siRNA_',col-1,sep=''))
+}
+}
+
+anova(lm(all~siRNA+concentr))
+library(DescTools)
+for (conc in c(1,5,20,100))
+{
+print(paste(conc,'nM:'))
+print(DunnettTest(all[concentr==conc],as.factor(siRNA[concentr==conc]),control='siRNA_Ø'))
+write.csv(DunnettTest(all[concentr==conc],as.factor(siRNA[concentr==conc]),control='siRNA_Ø')$siRNA_Ø,paste('Dunnett_test_output_',conc,'_nM.csv',sep=''))
+}

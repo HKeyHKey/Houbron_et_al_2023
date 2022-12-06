@@ -1,0 +1,54 @@
+data=read.csv('Formatted_qRT-PCR_data.csv')
+E=c()
+G=c()
+desc=c()
+for (treatment in unique(sub('-[0-9]*$','',data$Sample)))
+{
+for (replicate in grep(paste('^',treatment,'-',sep=''),data$Sample))
+{
+E=append(E,mean(c(data$E.tech..Rep..1[replicate],data$E.tech..Rep..2[replicate],data$E.tech..Rep..3[replicate]),na.rm=T))
+G=append(G,mean(c(data$GAPDH.tech..Rep..1[replicate],data$GAPDH.tech..Rep..2[replicate],data$GAPDH.tech..Rep..3[replicate]),na.rm=T))
+}
+desc=append(desc,rep(treatment,length(grep(paste('^',treatment,'-',sep=''),data$Sample))))
+}
+
+y_range=max(pretty(c(0,max(E/G))))
+library(plotrix)
+
+pdf('Boxplot_qRT-PCR_20_nM_siRNA.pdf',width=10,height=7)
+plot(c(1:10),c(1:10),ylim=c(0,y_range),ty='n',axes=F,xlab='',ylab='Viral RNA abundance (normalized to GAPDH)')
+
+untreated_infected=(E/G)[desc=='INF']
+untreated_uninfected=(E/G)[desc=='NI']
+remdesivir=(E/G)[desc=='Rem']
+
+rect(0,mean(untreated_infected)-std.error(untreated_infected),11,mean(untreated_infected)+std.error(untreated_infected),col='lightblue',border='lightblue')
+lines(c(0,11),rep(mean(untreated_infected),2),lty=2,col='blue')
+rect(0,mean(untreated_uninfected)-std.error(untreated_uninfected),11,mean(untreated_uninfected)+std.error(untreated_uninfected),col='pink',border='pink')
+rect(0,mean(remdesivir)-std.error(remdesivir),11,mean(remdesivir)+std.error(remdesivir),col='chartreuse3',border='chartreuse3')
+lines(c(0,11),rep(mean(remdesivir),2),lty=2,col='green')
+lines(c(0,11),rep(mean(untreated_uninfected),2),lty=2,col='red')
+par(new=T)
+display=factor(desc,levels=c("siRNA 1","siRNA 2","siRNA 3","siRNA 4","siRNA 5","siRNA 6","siRNA 7","siRNA 8","siRNA ø","mock"))
+boxplot((E/G)~display,axes=F,xlab='',ylab='',ylim=c(0,y_range))
+axis(2)
+axis(1,labels=c(paste('siRNA',1:8),'siRNA Ø','mock'),at=c(1:10))
+dev.off()
+
+anova(lm((E/G)~display))
+library(DescTools)
+write.csv(DunnettTest((E/G)[grep('^siRNA|^mock',desc)],as.factor(display[grep('^siRNA|^mock',desc)]),control='siRNA ø')$`siRNA ø`,'Dunnett_test_output_qPCR.csv')
+
+### Below: calculating percentage reduction in viral RNA for each siRNA:
+untreated=mean(untreated_infected)
+uninfected=mean(untreated_uninfected)
+percent_reduction=c()
+for (treatment in unique(display[!is.na(display)]))
+{
+y=mean((E/G)[display==treatment],na.rm=T) # removing the "NA" due to the non-annotation of control conditions (INF, NI and Rem)
+percent_reduction=append(percent_reduction,100*(1-(y-uninfected)/(untreated-uninfected)))
+}
+out=list(unique(display[!is.na(display)]),percent_reduction)
+names(out)=c('siRNA','Percent reduction in viral RNA')
+write.csv(as.data.frame(out),'Percentage_reduction_in_viral_RNA.csv')
+
