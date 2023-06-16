@@ -1,0 +1,45 @@
+args = commandArgs(trailingOnly=TRUE)
+nb_sets=as.numeric(args[1])
+ref=args[2]
+all=c()
+for (set in 1:nb_sets)
+{
+data=read.table(paste('aligned_set_',set,'.txt',sep=''))
+ref_array=strsplit(as.character(data$V2[data$V1==ref]),'')[[1]]
+other_array=c()
+for (seq_index in 1:length(data$V2[data$V1!=ref]))
+other_array=rbind(other_array,strsplit(as.character(data$V2[data$V1!=ref]),'')[[seq_index]])
+percentage=c()
+for (bp in 1:length(ref_array))
+if (ref_array[bp] != '-')
+{
+ref_nt=ref_array[bp]
+percentage=append(percentage,length(other_array[,bp][other_array[,bp]==ref_nt])/length(data$V2[data$V1!=ref]))
+}
+all=cbind(all,percentage)
+}
+library(plotrix)
+m=apply(100*all,1,mean) # converting into percentages while calculating means
+se=apply(100*all,1,std.error) # converting into percentages while calculating standard errors
+sd=apply(100*all,1,sd) # converting into percentages while calculating standard deviations
+y_range=c(0,100)
+color='darkgoldenrod4'
+pdf(paste('Conservation_in_',nb_sets,'_random_sets_with_se.pdf',sep=''),width=12,height=8)
+plot(m+se,ty='l',ylim=y_range,xlab=paste('Position in ',ref,' (bp)',sep=''),ylab='Percentage identity',axes=F,col=color)
+par(new=T)
+plot(m-se,ty='l',ylim=y_range,xlab='',ylab='',axes=F,col=color)
+par(new=T)
+plot(m,ty='l',ylim=y_range,xlab='',ylab='',axes=F)
+axis(1)
+axis(2)
+dev.off()
+pdf(paste('Conservation_in_',nb_sets,'_random_sets_with_sd.pdf',sep=''),width=12,height=8)
+plot(m+sd,ty='l',ylim=y_range,xlab=paste('Position in ',ref,' (bp)',sep=''),ylab='Percentage identity',axes=F,col=color)
+par(new=T)
+plot(m-sd,ty='l',ylim=y_range,xlab='',ylab='',axes=F,col=color)
+par(new=T)
+plot(m,ty='l',ylim=y_range,xlab='',ylab='',axes=F)
+axis(1)
+axis(2)
+dev.off()
+write.csv(cbind(m,se,sd),'For_conservation_plotting.csv')

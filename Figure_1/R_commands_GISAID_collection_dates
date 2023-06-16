@@ -1,0 +1,16 @@
+data=read.table('peeled.dat')
+collection=as.Date(data$V1)
+submission=as.Date(data$V2)
+
+pdf('Cumulative_plot_collection_dates.pdf',width=7,height=6)
+plot(ecdf(collection),log='y',ylim=c(1e-7,1),axes=F,ylab='Number of sequences',xlab='Date of collection',main='Cumulative plot, collection dates')
+axis(2,labels=c(1,1e1,1e2,1e3,1e4,1e5,1e6,1e7),at=c(1,1e1,1e2,1e3,1e4,1e5,1e6,1e7)/length(collection))
+axis(1,labels=c('2020-01-01','2020-07-01','2021-01-01','2021-07-01','2022-01-01','2022-07-01'),at=as.Date(c('2020-01-01','2020-07-01','2021-01-01','2021-07-01','2022-01-01','2022-07-01')))
+dev.off()
+
+pdf('Cumulative_plot_submission_dates.pdf',width=7,height=6)
+plot(ecdf(submission),log='y',ylim=c(1e-7,1),axes=F,ylab='Number of sequences',xlab='Date of collection',main='Cumulative plot, submission dates')
+axis(2,labels=c(1,1e1,1e2,1e3,1e4,1e5,1e6,1e7),at=c(1,1e1,1e2,1e3,1e4,1e5,1e6,1e7)/length(submission))
+axis(1,labels=c('2020-01-01','2020-07-01','2021-01-01','2021-07-01','2022-01-01','2022-07-01'),at=as.Date(c('2020-01-01','2020-07-01','2021-01-01','2021-07-01','2022-01-01','2022-07-01')))
+dev.off()
+
