@@ -1,0 +1,43 @@
+1. siRNAs used by Khaitov et al. (2021):
+Their Suppl. Table 1 gives sequences "of sense strand". These sequences (once trimmed for their 3´ tt dinucleotide) map on the viral genome's sense strand (so basically these are intended passenger strands). Intended guide strands are not described, so I simply considered it is the antisense of the tt-trimmed sequence (with a tt dinucleotide added at its 3´ end too), but their Mat. & Met. section describes where they added LNA nucleotides in one siRNA to stabilize it, and the added nucleotides create 3-nt 3´ overhangs. I will just consider that the non-modified siRNAs had 2-nt 3´ overhangs, but this is not documented anywhere...
+These 3 siRNAs were selected (out of 13 initial, in-silico designed candidates) with a reporter assay. Only one (siR-7) of the three is then significantly active against the virus in infected Vero E6 cells.
+
+2. siRNAs used by Idris et al. (2021):
+The main text talks about 18 candidate siRNAs, listed in Fig. 1A (which only lists 17 siRNAs) and Suppl. Table 1 (which lists 21 siRNAs, including two obvious controls: "NC" and "Lamin A/C", but still 19 siRNAs remain: that's the 17 siRNAs of Fig. 1A + 2 additional siRNAs named "L362" and "N367"; these are also control siRNAs according to Fig. 1F and indeed they don't match any of the viral sequences in 'Selected_sequences_2021-01-08_08-46.fasta'). I included all the 17 siRNAs of Fig. 1A in 'Published_siRNAs.fa'.
+Out of these 17 siRNAs, most have a moderate activity (11 siRNAs do not reduce viral plaque count by more than 50%); 3 siRNAs are selected officially because they have "the most potent and dose-dependent repression" but this is not absolutely true (or at least not shown): that's siRNAs Hel1, Hel2, siUC7 and siUTR3.
+
+3. siRNAs used by Tolksdorf et al. (2021):
+Eight siRNAs designed by the Horizon online tool, tested on a reporter construct, and only the best one ("siCoV6") was then assessed against the virus in Vero E6 cells.
+Fig. 3A: a 10 nM siRNA transfection reduces viral RNA in the Vero E6 cell medium by ~100-fold 24h after infection and ~15 fold 48h after infection.
+
+4. siRNAs used by Niktab et al. (2021):
+Six siRNAs designed by a published software, "checked" for off-targets by BLAST on the human transcriptome, then transfected (or just added to the medium? not clear; they used an extremely high concentration, don't mention transfection reagents, and they cite a paper to justify their method ... except that paper [Kondratowicz et al., 2011] did not do that at all, they used regular transfection with more normal siRNA doses...). Treated (apparently with a mixture of all 6 siRNAs) Vero E6 cells show some response in terms of viral abundance.
+Intended guide strands are not described, so I simply considered it is the antisense of the T-to-U-converted sequence of the presented passenger strands, and I had to invent what the 3´ overhangs could be (I put a TT, because that's what many people had done, but there's no way to check). 
+
+5. siRNAs used by Sohrab et al. (2022b):
+Four siRNAs designed with an online tool and checked for off-targets with Blast. A result table, and a very obscure figure, show that they do not repress virus abundance in Vero E6 cells (despite their claims of the contrary). Authors did not reply to my emails (sent on September 30, 2022 and October 7, 2022).
+
+6. siRNAs used by Yogev et al. (2022):
+High-throughput (and carefully-controlled) analysis of 16,471 shRNAs against their cognate reporters (tiling the viral genome and removing things which match unconserved viral regions, or which have sequence attributes that are typically associated with poor shRNA response, or whose seed "can potentially match a human transcript" but obviously that's not what they did otherwise they would have eliminated everything). Nine candidate siRNAs are tested in Vero E6 cells (with a 100 nM transfection; qPCR 48h after infection): 5 siRNAs repress viral RNA accumulation by at least 95%.
+
+7. siRNAs used by Sohrab et al. (2022a):
+Three siRNAs designed and checked very much like in Sohrab et al. (2022b) (cf above), but these are different siRNAs, and now they are tested in HEK-293 cells. No dose-dependence in qPCR response, it looks like there is no effect in fact (they emphasize on the apparent reduction observed at 5 nM siRNA, but if it disappears at 25 nM...). Authors did not reply to my emails (sent on September 30, 2022 and October 7, 2022).
+
+8. siRNAs designed by Friedrich et al. (2022):
+Their table 1 gives passenger strand sequences, and the caption says that there is a 3´ dTdT. I therefore deduced what the guide strand was (taking the antisense of the dTdT-trimmed guide, and adding a 3´ dTdT).
+Out of 8 tested anti-SARS-CoV-2 siRNAs, 3 are efficient (statistically significant reduction in foci-forming units in cultured Vero E6 cells; each time >65%) and 5 do not show a significant reduction (but with only 2 biological replicates: some may have reached significance with more replicates).
+
+9. siRNAs designed by Chang et al. (2022):
+11 siRNA candidates selected for their viral variant coverage, target site accessibility and low human off-target count. 10 out of 11 have a strong repressive effect on viral RNA in infected Vero E6 cells (>60% reduction in viral RNA), with 4 siRNAs having a very strong effect (reduction >99%). These same 4 siRNAs also induce ~100% inhibition of plaque-forming virion count.
+One of them (C6: best IC50 and lowest number of predicted off-targets) was selected for chemical modification and in vivo administration in mouse (by intranasal instillation and aerosol inhalation), with great results in terms of viral titer and clinical outcomes.
+
+10. siRNAs designed by Becker et al. (2022):
+19 siRNAs were computationally designed against SARS-CoV-2, and delivered by shRNA vectors. A fluorescence-based screen (with fluorescent antibodies against dsRNA) selects 7 of these 19 antiviral candidates, and a secondary screen (also fluorescence assay, but also RT-qPCR and TCID50) selects 5 out of these 7 (Fig. 1E: in these 7 siRNAs, only C16 and C17 does not reduce viral RNA by more than 50%; C22 is directed against hACE2, not against the virus). In vivo, a shRNA expressing the top 3 sequences does not have much of an effect in K18-hACE-2 mice.
+According to the primers they used for shRNA cloning (see their Suppl. Table S1), the guide's 3´ overhang should be a GG dinucleotide (so I guessed what their guides were, by reverse-complementing the 3´ dinucleotide-trimmed passenger, then adding a 3´ GG).
+
+11. siRNAs designed by Ambike et al. (2022):
+siRNAs targeting the negative strand (n=11) are inefficient while siRNAs targetin the positive strand (n=3) are efficient. Fig. 3D: siRNAs against the ORF1 region (n=3) show ~80-90% efficiency in infection (measured on a GFP reporter inserted in viral genome), while siRNAs also targeting subgenomic transcripts show variable efficiency (~40-80%). Chemically modified versions of the 3 siRNAs against viral genomic RNA reduce viral infection in Vero-E6 cells and (when administered with PEI) in human precision cut lung slices.
+Among all tested siRNAs, N4 to N11 were designed against the negative strand and they are inactive: our figure will only represent positive strand-targetting siRNAs (percentages of activity would not be fairly comparable otherwise).
+
+12. siRNAs designed by Nabiabad et al. (2022):
+Optimize DNA aptamers to bind a viral protein, and encapsulate siRNAs (chosen with an online tool; picked the best one according to some computational prediction) in lipids conjugated with the aptamer, then treat a lung cell line (HBE135‐E6E7) with these particles. No idea how much siRNA was actually delivered in the cells, and how much the observed repression is due to the siRNA or to entry blockade by the aptamer. At least in some conditions they observed a strong decrease in viral titer (and they even gave their thing to a human patient in a hospital; he ended up well). Authors did not reply to my emails (sent on September 30, 2022 and October 7, 2022).
