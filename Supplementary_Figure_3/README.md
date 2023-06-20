@@ -24,3 +24,7 @@ Extraction of mutation description for variants (correctly sequenced, from a hum
 ## Description of mutations in variants of concern in the 2022-09-26 dataset: ##
 
 ``./Script_mutation_statistics_in_variants_of_concern.sh``
+
+Plotting graphs:
+
+``Rscript R_commands_amino_acid_substitutions_in_VOC_VOI_VUM Amino_acid_substitution_per_gene_in_VOC_VOI_VUM_2022_09_26.dat``
