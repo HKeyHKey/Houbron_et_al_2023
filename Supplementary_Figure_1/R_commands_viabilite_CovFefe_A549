@@ -1,0 +1,25 @@
+args = commandArgs(trailingOnly=TRUE)
+conc=as.numeric(sub('.*_','',sub('nM.*','',args[1])))
+
+library(DescTools)
+library(car)
+
+response=c();duplex=c()
+
+data=read.csv(args[1],header=T)
+y_range=max(pretty(c(0,max(data))))
+for (column in c(1:ncol(data)))
+{
+response=append(response,data[,column])
+duplex=append(duplex,rep(colnames(data)[column],nrow(data)))
+}
+pdf(paste('Viability_assay_A549_',conc,'_nM.pdf',sep=''),width=10,height=6)
+boxplot(response~duplex,xlab='Transfected siRNA',ylab='Cell count after 72h',ylim=c(0,y_range))
+dev.off()
+print(paste("Concentration =",conc,"nM"))
+print("Shapiro-Wilk test p-values:")
+for (d in unique(duplex))
+print(shapiro.test(response[duplex==d])$p.value)
+print("Levene test p-value:")
+print(leveneTest(response,as.factor(duplex))$Pr[1])
+print(DunnettTest(response,as.factor(duplex),control='ctrl.siRNA'))
