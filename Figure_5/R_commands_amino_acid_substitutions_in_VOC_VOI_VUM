@@ -1,0 +1,25 @@
+args = commandArgs(trailingOnly=TRUE)
+#args=c('Amino_acid_substitution_per_gene_in_VOC_VOI_VUM_2022_09_26.dat','ORF_lengths.dat')
+
+subst=read.table(args[1],header=F)
+lengths=read.table(args[2],header=T)
+for (lineage in unique(subst$V1))
+{
+x=c();y=c();annot=c()
+pdf(paste('Substitutions_in_variants_vs_ORF_lengths_for_lineage_',lineage,'.pdf',sep=''),width=9,height=9)
+for (orf in unique(subst$V3))
+{
+x=append(x,lengths$Length.a.a..[lengths$ORF==orf])
+y=append(y,subst$V2[subst$V1==lineage & subst$V3==orf])
+annot=append(annot,orf)
+}
+annot[annot=='NSP12']='Pol' # synonym (and more clear)
+annot[annot=='NSP13']='Hel' # synonym (and more clear)
+plot(x,y,xlab='ORF length (a.a.)',ylab='Number of recorded substitutions in ORF for that lineage',axes=F,main=paste('Variant lineage:',lineage))
+text(x[annot=='Spike'],y[annot=='Spike'],annot[annot=='Spike'],pos=1)
+text(x[annot=='NSP8' | annot=='Pol' | annot=='Hel'],y[annot=='NSP8' | annot=='Pol' | annot=='Hel'],annot[annot=='NSP8' | annot=='Pol' | annot=='Hel'],pos=1)
+points(x[annot=='Spike'],y[annot=='Spike'],pch=19,col='darkgreen')
+points(x[annot=='NSP8' | annot=='Pol' | annot=='Hel'],y[annot=='NSP8' | annot=='Pol' | annot=='Hel'],pch=19,col='pink')
+axis(1);axis(2)
+dev.off()
+}

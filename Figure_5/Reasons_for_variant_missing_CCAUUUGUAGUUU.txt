@@ -1,0 +1,26 @@
+ *** In lineage Alpha: ***
+
+ *** In lineage Beta: ***
+>hCoV-19/Turkey/Ankara-1717_344
+NNNNNNNNNNNNN
+>ref
+CCATTTGTAGTTT
+
+ *** In lineage Delta: ***
+>hCoV-19/Anguilla/119143/2022
+CCATNNNNNNNNN
+>hCoV-19/Martinique/MTQ-ERFB-20
+CCGTTTGTAGTTT
+>hCoV-19/Saudi
+NNNNNNNNNNNNN
+>ref
+CCATTTGTAGTTT
+
+ *** In lineage Gamma: ***
+
+ *** In lineage Lambda: ***
+
+ *** In lineage Mu: ***
+
+ *** In lineage Omicron: ***
+

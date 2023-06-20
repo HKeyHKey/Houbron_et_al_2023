@@ -1,0 +1,22 @@
+ *** In lineage Alpha: ***
+
+ *** In lineage Beta: ***
+
+ *** In lineage Delta: ***
+
+ *** In lineage Gamma: ***
+
+ *** In lineage Lambda: ***
+>hCoV-19/Mayotte/IPP22382/2021
+GGAACTTTAAGTC
+>ref
+AGAACTTTAAGTC
+
+ *** In lineage Mu: ***
+
+ *** In lineage Omicron: ***
+>hCoV-19/Estonia/19907631/2022
+NNNNNNNNNNNNN
+>ref
+AGAACTTTAAGTC
+

@@ -1,0 +1,26 @@
+ *** In lineage Alpha: ***
+
+ *** In lineage Beta: ***
+
+ *** In lineage Delta: ***
+>hCoV-19/Morocco/FMP381/2021
+ATGATGCACTTAA
+>ref
+ATGATGCACTCAA
+
+ *** In lineage Gamma: ***
+>hCoV-19/Philippines/PH-PGC-601
+ATGATGCACTTAA
+>ref
+ATGATGCACTCAA
+
+ *** In lineage Lambda: ***
+
+ *** In lineage Mu: ***
+
+ *** In lineage Omicron: ***
+>hCoV-19/Belize/CML-685/2022
+GTGATGCACTCAA
+>ref
+ATGATGCACTCAA
+
