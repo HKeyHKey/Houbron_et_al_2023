@@ -1,0 +1,63 @@
+genome_length=29891 # this is the length (in nt) of the EPI_ISL_402119 genome
+mapping=read.table('Guide_blast.txt',sep='\t')
+
+pdf('Map_published_siRNAs.pdf',width=15,height=10)
+
+plot(1,ty='n',xlim=c(0,genome_length+1),ylim=c(-0.4,1),xlab='Coordinate in EPI_ISL_402119 genome (nt)',ylab='',axes=F)
+lines(c(1,genome_length),c(0,0),lwd=3)
+axis(1)
+
+annot=read.table('Annotated_ORF_coordinates_in_EPI_ISL_402119.txt',header=T)
+for (i in 1:nrow(annot))
+{
+if (i%%2==1)
+{
+color='red'
+} else color='blue'
+lines(c(annot$Start[i],annot$End[i]),c(0,0),col=color,lwd=15,lend=1)
+text(mean(c(annot$Start[i],annot$End[i])),0,annot$Name[i],col='white')
+}
+
+
+activity=read.table('Reported_activity.txt')
+colors=rainbow(length(unique(activity$V1)))
+index=1
+for (study in unique(activity$V1))
+{
+color=colors[index]
+y1=0.1+index*0.06
+y2=y1-0.05
+if (study=='This_study')
+{
+y1=-0.15
+y2=y1+0.05
+}
+for (siRNA in (activity$V2[activity$V1==study]))
+{
+mapping_index=grep(paste('^',study,'_[0-9]+_',siRNA,'_',sep=''),mapping$V1)
+if (length(mapping_index)==0)
+mapping_index=c(1:nrow(mapping))[mapping$V1==siRNA]
+bp=(mapping$V9[mapping_index]+mapping$V10[mapping_index])/2 # placing the arrow at the middle of the alignment segment
+if (length(bp)>0)
+{
+if (activity$V3[activity$V1==study & activity$V2==siRNA]=='active')
+{
+arrows(bp,y1,bp,y2,lwd=4,length=0.1)
+arrows(bp,y1,bp,y2,lwd=1.5,length=0.1,col=color)
+}
+if (activity$V3[activity$V1==study & activity$V2==siRNA]=='unclear')
+{
+arrows(bp,y1,bp,y2,lwd=4,length=0.1,lty=3)
+arrows(bp,y1,bp,y2,lwd=1.5,length=0.1,col=color,lty=3)
+}
+if (activity$V3[activity$V1==study & activity$V2==siRNA]=='poor')
+{
+arrows(bp,y1,bp,y2,lwd=1.5,length=0.1,col=color)
+}
+}
+}
+text(genome_length,(y1+y2)/2,study,col=color)
+index=index+1
+}
+
+dev.off()
