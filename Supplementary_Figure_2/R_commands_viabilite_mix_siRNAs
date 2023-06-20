@@ -1,0 +1,34 @@
+args = commandArgs(trailingOnly=TRUE)
+cell_line=sub('.*_','',sub('_groupe_siRNA.csv','',args[1]))
+
+library(DescTools)
+library(car)
+
+response=c();duplex=c()
+
+data=read.csv(args[1],header=T)
+y_range=max(pretty(c(0,max(data))))
+for (column in c(1:ncol(data)))
+{
+response=append(response,data[,column])
+duplex=append(duplex,rep(colnames(data)[column],nrow(data)))
+}
+ordered_duplexes=c('à.vide')
+for (conc in c(20,100))
+ordered_duplexes=append(ordered_duplexes,paste(c('ctrl.siRNA','mix1_siRNA','mix2_siRNA'),'.',conc,'.nM',sep=''))
+ordered_duplex=factor(duplex,levels=ordered_duplexes)
+pdf(paste('Viability_mix_',cell_line,'.pdf',sep=''),width=10,height=6)
+boxplot(response~ordered_duplex,xlab='Transfected siRNAs',ylab='Cell count after 72h',ylim=c(0,y_range))
+dev.off()
+print(paste("Cell line =",cell_line))
+print("Shapiro-Wilk test p-values:")
+for (d in unique(ordered_duplex))
+print(shapiro.test(response[ordered_duplex==d])$p.value)
+print("Levene test p-value:")
+print(leveneTest(response,as.factor(ordered_duplex))$Pr[1])
+for (conc in c(20,100))
+{
+if (conc==20) exclude=100
+if (conc==100) exclude=20
+print(DunnettTest(response[grep(paste(exclude,'nM',sep='.'),duplex,invert=TRUE)],as.factor(duplex[grep(paste(exclude,'nM',sep='.'),duplex,invert=TRUE)]),control=paste('ctrl.siRNA',conc,'nM',sep='.')))
+}

@@ -1,0 +1,73 @@
+library(car)
+for (cell_line in c('A549','VeroE6'))
+{
+data=read.csv(paste('Formatted_',cell_line,'_siRNA_combinations_qRT-PCR_data.csv',sep=''))
+E=c()
+G=c()
+desc=c()
+for (treatment in unique(sub('-[0-9]*$','',data$Sample)))
+{
+for (replicate in grep(paste('^',treatment,'-',sep=''),data$Sample))
+{
+E=append(E,mean(c(data$E.tech..Rep..1[replicate],data$E.tech..Rep..2[replicate],data$E.tech..Rep..3[replicate]),na.rm=T))
+G=append(G,mean(c(data$GAPDH.tech..Rep..1[replicate],data$GAPDH.tech..Rep..2[replicate],data$GAPDH.tech..Rep..3[replicate]),na.rm=T))
+}
+desc=append(desc,rep(treatment,length(grep(paste('^',treatment,'-',sep=''),data$Sample))))
+}
+
+y_range=max(pretty(c(0,max(E/G))))
+library(plotrix)
+
+pdf(paste('Boxplot_qRT-PCR_siRNA_combinations_on_',cell_line,'.pdf',sep=''),width=7,height=7)
+plot(c(1:10),c(1:10),ylim=c(0,y_range),ty='n',axes=F,xlab='',ylab='Viral RNA abundance (normalized to GAPDH)')
+
+untreated_infected=(E/G)[desc=='INF']
+untreated_uninfected=(E/G)[desc=='NI']
+remdesivir=(E/G)[desc=='Rem']
+
+rect(0,mean(untreated_infected)-std.error(untreated_infected),11,mean(untreated_infected)+std.error(untreated_infected),col='lightblue',border='lightblue')
+lines(c(0,11),rep(mean(untreated_infected),2),lty=2,col='blue')
+rect(0,mean(untreated_uninfected)-std.error(untreated_uninfected),11,mean(untreated_uninfected)+std.error(untreated_uninfected),col='pink',border='pink')
+rect(0,mean(remdesivir)-std.error(remdesivir),11,mean(remdesivir)+std.error(remdesivir),col='chartreuse3',border='chartreuse3')
+lines(c(0,11),rep(mean(remdesivir),2),lty=2,col='green')
+lines(c(0,11),rep(mean(untreated_uninfected),2),lty=2,col='red')
+par(new=T)
+display=factor(desc,levels=c("mock","siRNA ø","Mix siRNA3_siRNA8","Mix siRNA3_siRNA4_siRNA8"))
+boxplot((E/G)~display,axes=F,xlab='',ylab='',ylim=c(0,y_range))
+axis(2)
+axis(1,labels=c("mock","siRNA ø","Mix siRNA3_siRNA8","Mix siRNA3_siRNA4_siRNA8"),at=c(1:4))
+dev.off()
+
+sink(paste('Normality_test_siRNA_combinations_on_',cell_line,'.txt',sep=''))
+for (treatment in unique(desc[grep('^siRNA|^mock|^Mix',desc)]))
+{
+print(paste(treatment,':',sep=''))
+print(shapiro.test((E/G)[desc==treatment])$p.value)
+}
+sink()
+anova(lm((E/G)~display))
+library(DescTools)
+write.csv(DunnettTest((E/G)[grep('^siRNA|^mock|^Mix',desc)],as.factor(display[grep('^siRNA|^mock|^Mix',desc)]),control='siRNA ø')$`siRNA ø`,paste('Dunnett_test_output_qPCR_siRNA_combinations_on_',cell_line,'.csv',sep=''))
+
+### Below: calculating percentage reduction in viral RNA for each siRNA:
+untreated=mean(untreated_infected)
+uninfected=mean(untreated_uninfected)
+percent_reduction=c()
+for (treatment in unique(display[!is.na(display)]))
+{
+y=mean((E/G)[display==treatment],na.rm=T) # removing the "NA" due to the non-annotation of control conditions (INF, NI and Rem)
+percent_reduction=append(percent_reduction,100*(1-(y-uninfected)/(untreated-uninfected)))
+}
+out=list(unique(display[!is.na(display)]),percent_reduction)
+names(out)=c('siRNA','Percent reduction in viral RNA')
+write.csv(as.data.frame(out),paste('Percentage_reduction_in_viral_RNA_siRNA_combinations_on_',cell_line,'.csv',sep=''))
+
+sink(paste('Comparison_2_siRNA_mix_vs_3_siRNA_mix_',cell_line,'.txt',sep=''))
+print(leveneTest(c((E/G)[desc=='Mix siRNA3_siRNA8'],(E/G)[desc=='Mix siRNA3_siRNA4_siRNA8']),as.factor(c(rep('mix_2_siRNAs',times=length(desc[desc=='Mix siRNA3_siRNA8'])),rep('mix_3_siRNAs',times=length(desc[desc=='Mix siRNA3_siRNA4_siRNA8']))))))
+print('t-test with homogeneous variances:')
+print(t.test((E/G)[desc=='Mix siRNA3_siRNA8'],(E/G)[desc=='Mix siRNA3_siRNA4_siRNA8'],var.equal=T)$p.value)
+print('t-test with heterogeneous variances:')
+print(t.test((E/G)[desc=='Mix siRNA3_siRNA8'],(E/G)[desc=='Mix siRNA3_siRNA4_siRNA8'],var.equal=F)$p.value)
+sink()
+}
+
