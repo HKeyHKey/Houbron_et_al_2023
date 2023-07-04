@@ -41,7 +41,7 @@ Extraction of siRNA target sites on each correctly sequenced variant for these 7
 
 ``for target in AGAACUUUAAGUC GUGUCUUUAGCUA UGUCUUUAGCUAU CCAUUUGUAGUUU AUGAUGCACUCAA GUAAACAGAUUUA AAGAACUUUAAGU AAUGAUGCACUCA;do ./Script_hits_on_variants_of_interest_September_2022.sh $target > Reasons_for_variant_missing_$target'.txt';done``
 
-## Recorded mino acid substitutions per ORF in each variant of concern or of interest (Figure 5C and Supplementary Figure 2): ##
+## Recorded amino acid substitutions per ORF in each variant of concern or of interest (Figure 5C and Supplementary Figure 4): ##
 
 File 'variant_surveillance_tsv_2022_09_26.tar.xz': downloaded from https://www.epicov.org/epi3/frontend#4aac5d on September 27, 2022.
 
