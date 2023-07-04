@@ -1,0 +1,1 @@
+See instructions, scripts and data for the preparation of Figure 5C and Supplementary Figure 4 in [the directory for Figure 5](https://github.com/HKeyHKey/Houbron_et_al_2023/blob/main/Figure_5/README.md#recorded-amino-acid-substitutions-per-orf-in-each-variant-of-concern-or-of-interest-figure-5c-and-supplementary-figure-4).
